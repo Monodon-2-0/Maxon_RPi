@@ -7,17 +7,13 @@ Created on Mon Dec 11 18:32:29 2023
 
 
 import time
-import bluerobotics_navigator as navigator
 
 from ctypes import *
 from pymavlink import mavutil
-from bluerobotics_navigator import PwmChannel
-# board = pyfirmata.Arduino('COM3')
 
 i = 0
 
 # board.digital[9].mode = pyfirmata.SERVO
-
 
 # def tail(valores):
 #     board.digital[9].write(valores)
@@ -45,7 +41,27 @@ acceleration = 30000  # rpm/s, up to 1e7 would be possible
 deceleration = 30000  # rpm/s
 
 
+def set_servo_pwm(servo_n, microseconds):
+    """ Sets AUX 'servo_n' output PWM pulse-width.
 
+    Uses https://mavlink.io/en/messages/common.html#MAV_CMD_DO_SET_SERVO
+
+    'servo_n' is the AUX port to set (assumes port is configured as a servo).
+        Valid values are 1-3 in a normal BlueROV2 setup, but can go up to 8
+        depending on Pixhawk type and firmware.
+    'microseconds' is the PWM pulse-width to set the output to. Commonly
+        between 1100 and 1900 microseconds.
+
+    """
+    # master.set_servo(servo_n+8, microseconds) or:
+    master.mav.command_long_send(
+        master.target_system, master.target_component,
+        mavutil.mavlink.MAV_CMD_DO_SET_SERVO,
+        0,  # first transmission of this command
+        servo_n,
+        microseconds,  # PWM pulse-width
+        0, 0, 0, 0, 0  # unused parameters
+    )
 # Query motor position
 def GetPositionIs(node_n):
     pPositionIs = c_long()
@@ -60,6 +76,12 @@ def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
             epos.VCS_SetPositionProfile(keyHandle, 1, target_speed, acceleration, deceleration,
                                         byref(pErrorCode))  # set profile parameters
             epos.VCS_MoveToPosition(keyHandle, 1, target_position, True, True, byref(pErrorCode))  # move to position
+            if servo_direction:
+                us = 800
+                set_servo_pwm(8, us)
+            else:
+                us = 2200
+                set_servo_pwm(8, us)
 
             # time.sleep(0.8)
         elif target_speed == 0:
@@ -72,11 +94,9 @@ def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
 if __name__ == "__main__":
     # Initiating connection and setting motion profile
     # Create the connection
-    navigator.init()
-    navigator.set_pwm_freq_hz(1000)
-    navigator.set_pwm_channel_value(PwmChannel.Ch1, 327)
-    navigator.pwm_enable(True)
-
+    master = mavutil.mavlink_connection('udpin:0.0.0.0:14550')
+    # Wait a heartbeat before sending commands
+    master.wait_heartbeat()
     keyHandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0',
                                     byref(pErrorCode))  # specify EPOS version and interface
     epos.VCS_SetProtocolStackSettings(keyHandle, baudrate, timeout, byref(pErrorCode))  # set baudrate
