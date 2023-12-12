@@ -79,13 +79,15 @@ def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
             epos.VCS_SetPositionProfile(keyHandle, 1, target_speed, acceleration, deceleration,
                                         byref(pErrorCode))  # set profile parameters
             epos.VCS_MoveToPosition(keyHandle, 1, target_position, True, True, byref(pErrorCode))  # move to position
-            if servo_direction:
+            if servo_direction == 1:
                 us = 800
                 set_servo_pwm(8, us)
-            else:
+            elif servo_direction == 0:
                 us = 2200
                 set_servo_pwm(8, us)
-
+            elif servo_direction == 2:
+                us = 1500
+                set_servo_pwm(8, us)
             # time.sleep(0.8)
         elif target_speed == 0:
             epos.VCS_HaltPositionMovement(keyHandle, 1, byref(pErrorCode))  # halt motor
@@ -133,10 +135,10 @@ if __name__ == "__main__":
     # print('Motor position %s: %s' % (i,GetPositionIs(nodeID)))
     # print('Motor position %s: %s' % (i,GetPositionIs(nodeID2)))
 
-    MoveToPositionSpeed(0, 200, nodeID)  # move to position 0 steps at 2000 rpm/s
+    MoveToPositionSpeed(0, 200, nodeID,2)  # move to position 0 steps at 2000 rpm/s
     # print('Motor position: %s' % (GetPositionIs(nodeID2)))
     time.sleep(1)
-    MoveToPositionSpeed(0, 300, nodeID)
+    MoveToPositionSpeed(0, 300, nodeID,2)
     epos.VCS_SetDisableState(keyHandle, nodeID, byref(pErrorCode))  # disable device
     epos.VCS_SetDisableState(keyHandle, nodeID2, byref(pErrorCode))  # disable device
     epos.VCS_CloseDevice(keyHandle, byref(pErrorCode))  # close device
