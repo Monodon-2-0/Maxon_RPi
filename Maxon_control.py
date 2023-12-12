@@ -74,11 +74,14 @@ def GetPositionIs(node_n):
 
 # Move to position at speed
 def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
+    internal_variable = 0
     while True:
         if target_speed != 0:
             epos.VCS_SetPositionProfile(keyHandle, 1, target_speed, acceleration, deceleration,
                                         byref(pErrorCode))  # set profile parameters
             epos.VCS_MoveToPosition(keyHandle, 1, target_position, True, True, byref(pErrorCode))  # move to position
+            internal_variable += 1
+            print(internal_variable)
             if servo_direction == 1:
                 us = 800
                 set_servo_pwm(8, us)
