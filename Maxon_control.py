@@ -7,9 +7,12 @@ Created on Mon Dec 11 18:32:29 2023
 
 
 import time
+import bluerobotics_navigator as navigator
 
 from ctypes import *
 from pymavlink import mavutil
+from bluerobotics_navigator import PwmChannel
+
 
 i = 0
 
@@ -41,27 +44,7 @@ acceleration = 30000  # rpm/s, up to 1e7 would be possible
 deceleration = 30000  # rpm/s
 
 
-def set_servo_pwm(servo_n, microseconds):
-    """ Sets AUX 'servo_n' output PWM pulse-width.
 
-    Uses https://mavlink.io/en/messages/common.html#MAV_CMD_DO_SET_SERVO
-
-    'servo_n' is the AUX port to set (assumes port is configured as a servo).
-        Valid values are 1-3 in a normal BlueROV2 setup, but can go up to 8
-        depending on Pixhawk type and firmware.
-    'microseconds' is the PWM pulse-width to set the output to. Commonly
-        between 1100 and 1900 microseconds.
-
-    """
-    # master.set_servo(servo_n+8, microseconds) or:
-    master.mav.command_long_send(
-        master.target_system, master.target_component,
-        mavutil.mavlink.MAV_CMD_DO_SET_SERVO,
-        0,  # first transmission of this command
-        servo_n,
-        microseconds,  # PWM pulse-width
-        0, 0, 0, 0, 0  # unused parameters
-    )
 # Query motor position
 def GetPositionIs(node_n):
     pPositionIs = c_long()
@@ -90,28 +73,16 @@ def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
         if true_position == target_position:
             break
 
-def wait_conn():
-    """
-    Sends a ping to stabilish the UDP communication and awaits for a response
-    """
-    msg = None
-    while not msg:
-        master.mav.ping_send(
-            int(time.time() * 1e6), # Unix time in microseconds
-            0, # Ping number
-            0, # Request ping of all systems
-            0 # Request ping of all components
-        )
-        msg = master.recv_match()
-        time.sleep(0.5)
 
 if __name__ == "__main__":
     # Initiating connection and setting motion profile
     # Create the connection
-    master = mavutil.mavlink_connection('udpout:0.0.0.0:9000')
 
-    wait_conn()
-    
+    navigator.init()
+    navigator.set_pwm_freq_hz(1000)
+    navigator.set_pwm_channel_value(PwmChannel.Ch1, 2000)
+    navigator.pwm_enable(True)
+
     keyHandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0',
                                     byref(pErrorCode))  # specify EPOS version and interface
     epos.VCS_SetProtocolStackSettings(keyHandle, baudrate, timeout, byref(pErrorCode))  # set baudrate
