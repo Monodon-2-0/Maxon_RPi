@@ -97,7 +97,7 @@ def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
 if __name__ == "__main__":
     # Initiating connection and setting motion profile
     # Create the connection
-    master = mavutil.mavlink_connection('udpin:0.0.0.0:14770')
+    master = mavutil.mavlink_connection('udpin:0.0.0.0:5777')
     master.wait_heartbeat()
     print('connection success!')
 
