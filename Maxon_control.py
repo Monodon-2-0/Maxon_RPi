@@ -73,7 +73,7 @@ def GetPositionIs(node_n):
     return pPositionIs.value  # motor steps
 
 # Move to position at speed
-def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
+def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction, i):
     internal_variable = 0
     while True:
         if target_speed != 0:
@@ -82,11 +82,14 @@ def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
             epos.VCS_MoveToPosition(keyHandle, 1, target_position, True, True, byref(pErrorCode))  # move to position
             internal_variable += 1
             print(internal_variable)
-            if servo_direction == 1:
-                us = 800
+            if servo_direction == 1 and i == 0:
+                us = 1500
+                set_servo_pwm(8, us)
+            elif servo_direction == 1 and i == 1:
+                us = 2200 - 46*internal_variable
                 set_servo_pwm(8, us)
             elif servo_direction == 0:
-                us = 2200
+                us = 800 + 46*internal_variable
                 set_servo_pwm(8, us)
             elif servo_direction == 2:
                 us = 1500
@@ -115,12 +118,12 @@ if __name__ == "__main__":
     # epos.VCS_ClearFault(keyHandle, nodeID2, byref(pErrorCode)) # clear all faults
     # epos.VCS_ActivateProfilePositionMode(keyHandle, nodeID2, byref(pErrorCode)) # activate profile position mode
     # epos.VCS_SetEnableState(keyHandle, nodeID2, byref(pErrorCode)) # enable device
-    MoveToPositionSpeed(0, 300, nodeID, 2)
+    MoveToPositionSpeed(0, 300, nodeID, 2, 2)
     time.sleep(1)
     # tail(160)
     for i in range(2):
         servo_direction = 1
-        MoveToPositionSpeed(10000, 400, nodeID, servo_direction)  # move to position 20,000 steps at 5000 rpm/s
+        MoveToPositionSpeed(10000, 400, nodeID, servo_direction, i)  # move to position 20,000 steps at 5000 rpm/s
         # MoveToPositionSpeed(10000,200,nodeID2) # move to position 20,000 steps at 5000 rpm/s
         # print('Motor position %s: %s' % (i,GetPositionIs(nodeID)))
         # print('Motor position %s: %s' % (i,GetPositionIs(nodeID2)))
@@ -130,7 +133,7 @@ if __name__ == "__main__":
 
         # time.sleep(1)
         servo_direction = 0
-        MoveToPositionSpeed(-10000, 400, nodeID, servo_direction)  # move to position 0 steps at 2000 rpm/s
+        MoveToPositionSpeed(-10000, 400, nodeID, servo_direction, i)  # move to position 0 steps at 2000 rpm/s
         # for j in range(80, 160, 1):
         #     tail(j)
         #     time.sleep(0.01)
@@ -138,10 +141,10 @@ if __name__ == "__main__":
     # print('Motor position %s: %s' % (i,GetPositionIs(nodeID)))
     # print('Motor position %s: %s' % (i,GetPositionIs(nodeID2)))
 
-    MoveToPositionSpeed(0, 200, nodeID,2)  # move to position 0 steps at 2000 rpm/s
+    MoveToPositionSpeed(0, 200, nodeID,2, 2)  # move to position 0 steps at 2000 rpm/s
     # print('Motor position: %s' % (GetPositionIs(nodeID2)))
     time.sleep(1)
-    MoveToPositionSpeed(0, 300, nodeID,2)
+    MoveToPositionSpeed(0, 300, nodeID,2, 2)
     epos.VCS_SetDisableState(keyHandle, nodeID, byref(pErrorCode))  # disable device
     epos.VCS_SetDisableState(keyHandle, nodeID2, byref(pErrorCode))  # disable device
     epos.VCS_CloseDevice(keyHandle, byref(pErrorCode))  # close device
