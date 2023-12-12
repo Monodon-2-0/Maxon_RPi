@@ -10,7 +10,6 @@ import time
 from ctypes import *
 
 import pyfirmata
-from tkinter import *
 
 # board = pyfirmata.Arduino('COM3')
 
