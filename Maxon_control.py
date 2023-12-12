@@ -94,7 +94,7 @@ def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
 if __name__ == "__main__":
     # Initiating connection and setting motion profile
     # Create the connection
-    master = mavutil.mavlink_connection('udpin:0.0.0.0:14550')
+    master = mavutil.mavlink_connection('udpout:0.0.0.0:9000')
     # Wait a heartbeat before sending commands
     master.wait_heartbeat()
     keyHandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0',
