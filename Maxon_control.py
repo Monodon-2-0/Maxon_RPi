@@ -90,13 +90,28 @@ def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
         if true_position == target_position:
             break
 
+def wait_conn():
+    """
+    Sends a ping to stabilish the UDP communication and awaits for a response
+    """
+    msg = None
+    while not msg:
+        master.mav.ping_send(
+            int(time.time() * 1e6), # Unix time in microseconds
+            0, # Ping number
+            0, # Request ping of all systems
+            0 # Request ping of all components
+        )
+        msg = master.recv_match()
+        time.sleep(0.5)
 
 if __name__ == "__main__":
     # Initiating connection and setting motion profile
     # Create the connection
     master = mavutil.mavlink_connection('udpout:0.0.0.0:9000')
-    # Wait a heartbeat before sending commands
-    master.wait_heartbeat()
+
+    wait_conn()
+    
     keyHandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0',
                                     byref(pErrorCode))  # specify EPOS version and interface
     epos.VCS_SetProtocolStackSettings(keyHandle, baudrate, timeout, byref(pErrorCode))  # set baudrate
