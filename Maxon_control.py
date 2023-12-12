@@ -23,7 +23,7 @@ i = 0
 
 
 # EPOS Command Library path
-path = '.\EposCmd64.dll'
+path = '../../opt/EposCmdLib_6.8.1.0/lib/v7/libEposCmd.so.6.8.1.0'
 
 # Load library
 cdll.LoadLibrary(path)
