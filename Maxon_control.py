@@ -55,6 +55,7 @@ def GetPositionIs(node_n):
 def MoveToPositionSpeed(target_position, target_speed, node_n):
     while True:
         if target_speed != 0:
+            print("Working on approaching position")
             epos.VCS_SetPositionProfile(keyHandle, 1, target_speed, acceleration, deceleration,
                                         byref(pErrorCode))  # set profile parameters
             epos.VCS_MoveToPosition(keyHandle, 1, target_position, True, True, byref(pErrorCode))  # move to position
