@@ -68,7 +68,6 @@ def MoveToPositionSpeed(target_position, target_speed, node_n):
 
 if __name__ == "__main__":
     # Initiating connection and setting motion profile
-    epos.VCS_OpenDeviceDlg(byref(pErrorCode))
     keyHandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0',
                                     byref(pErrorCode))  # specify EPOS version and interface
     epos.VCS_SetProtocolStackSettings(keyHandle, baudrate, timeout, byref(pErrorCode))  # set baudrate
