@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # epos.VCS_ClearFault(keyHandle, nodeID2, byref(pErrorCode)) # clear all faults
     # epos.VCS_ActivateProfilePositionMode(keyHandle, nodeID2, byref(pErrorCode)) # activate profile position mode
     # epos.VCS_SetEnableState(keyHandle, nodeID2, byref(pErrorCode)) # enable device
-    MoveToPositionSpeed(0, 300, nodeID)
+    MoveToPositionSpeed(0, 300, nodeID, 2)
     time.sleep(1)
     # tail(160)
     for i in range(2):
