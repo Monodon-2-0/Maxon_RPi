@@ -5,12 +5,13 @@ Created on Mon Dec 11 18:32:29 2023
 @author: Innovacion
 """
 
-import serial
+
 import time
+import bluerobotics_navigator as navigator
+
 from ctypes import *
-
-import pyfirmata
-
+from pymavlink import mavutil
+from bluerobotics_navigator import PwmChannel
 # board = pyfirmata.Arduino('COM3')
 
 i = 0
@@ -39,10 +40,11 @@ nodeID = 1
 nodeID2 = 2
 baudrate = 1000000
 timeout = 500
-# keyHandle = 0
 # Configure desired motion profile
 acceleration = 30000  # rpm/s, up to 1e7 would be possible
 deceleration = 30000  # rpm/s
+
+
 
 # Query motor position
 def GetPositionIs(node_n):
@@ -52,13 +54,13 @@ def GetPositionIs(node_n):
     return pPositionIs.value  # motor steps
 
 # Move to position at speed
-def MoveToPositionSpeed(target_position, target_speed, node_n):
+def MoveToPositionSpeed(target_position, target_speed, node_n, servo_direction):
     while True:
         if target_speed != 0:
-            print("Working on approaching position")
             epos.VCS_SetPositionProfile(keyHandle, 1, target_speed, acceleration, deceleration,
                                         byref(pErrorCode))  # set profile parameters
             epos.VCS_MoveToPosition(keyHandle, 1, target_position, True, True, byref(pErrorCode))  # move to position
+
             # time.sleep(0.8)
         elif target_speed == 0:
             epos.VCS_HaltPositionMovement(keyHandle, 1, byref(pErrorCode))  # halt motor
@@ -69,6 +71,12 @@ def MoveToPositionSpeed(target_position, target_speed, node_n):
 
 if __name__ == "__main__":
     # Initiating connection and setting motion profile
+    # Create the connection
+    navigator.init()
+    navigator.set_pwm_freq_hz(1000)
+    navigator.set_pwm_channel_value(PwmChannel.Ch1, 327)
+    navigator.pwm_enable(True)
+
     keyHandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0',
                                     byref(pErrorCode))  # specify EPOS version and interface
     epos.VCS_SetProtocolStackSettings(keyHandle, baudrate, timeout, byref(pErrorCode))  # set baudrate
@@ -82,7 +90,8 @@ if __name__ == "__main__":
     time.sleep(1)
     # tail(160)
     for i in range(2):
-        MoveToPositionSpeed(10000, 400, nodeID)  # move to position 20,000 steps at 5000 rpm/s
+        servo_direction = 1
+        MoveToPositionSpeed(10000, 400, nodeID, servo_direction)  # move to position 20,000 steps at 5000 rpm/s
         # MoveToPositionSpeed(10000,200,nodeID2) # move to position 20,000 steps at 5000 rpm/s
         # print('Motor position %s: %s' % (i,GetPositionIs(nodeID)))
         # print('Motor position %s: %s' % (i,GetPositionIs(nodeID2)))
@@ -91,8 +100,8 @@ if __name__ == "__main__":
         #     time.sleep(0.01)
 
         # time.sleep(1)
-
-        MoveToPositionSpeed(-10000, 400, nodeID)  # move to position 0 steps at 2000 rpm/s
+        servo_direction = 0
+        MoveToPositionSpeed(-10000, 400, nodeID, servo_direction)  # move to position 0 steps at 2000 rpm/s
         # for j in range(80, 160, 1):
         #     tail(j)
         #     time.sleep(0.01)
