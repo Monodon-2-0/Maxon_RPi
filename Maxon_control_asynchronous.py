@@ -81,20 +81,21 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_directio
                                     byref(pErrorCode))  # move to position
             internal_variable += 1
             print(internal_variable)
+            us = 3000
             if servo_direction == 1 and i == 0:
-                us = 1500
+                # us = 1500
                 set_servo_pwm(servo_port, us)
                 set_servo_pwm(13, us)
             elif servo_direction == 1 and i == 1:
-                us = 2200 - 46*internal_variable
+                # us = 2200 - 46*internal_variable
                 set_servo_pwm(servo_port, us)
                 set_servo_pwm(13, us)
             elif servo_direction == 0:
-                us = 800 + 46*internal_variable
+                # us = 800 + 46*internal_variable
                 set_servo_pwm(servo_port, us)
                 set_servo_pwm(13, us)
             elif servo_direction == 2:
-                us = 1500
+                # us = 1500
                 set_servo_pwm(8, us)
                 set_servo_pwm(13, us)
 
