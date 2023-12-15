@@ -86,7 +86,7 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_port):
             epos.VCS_HaltPositionMovement(keyHandle, 2, byref(pErrorCode))  # halt motor
 
         true_position = get_position_is(node_n)
-        us = true_position/14.3 + 800
+        us = int((true_position + 10000)/14.3) + 800
         set_servo_pwm(servo_port, us)
         set_servo_pwm(13, us)
         print(f"microsegundos de pwm {us} y posicion del motor {get_position_is(node_n)}", )
