@@ -80,19 +80,19 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_directio
             epos.VCS_MoveToPosition(keyHandle, 2, -target_position, True, True,
                                     byref(pErrorCode))  # move to position
             internal_variable += 1
-            
+
             if servo_direction == 1 and i == 0:
                 us = 1500
                 set_servo_pwm(servo_port, us)
                 set_servo_pwm(13, us)
             elif servo_direction == 1 and i == 1:
-                us = 2200 - 46*internal_variable
-                us2 = 800 + 46 * internal_variable
+                us = 2200 - 87*internal_variable
+                us2 = 800 + 87 * internal_variable
                 set_servo_pwm(servo_port, us2)
                 set_servo_pwm(13, us)
             elif servo_direction == 0:
-                us = 800 + 46*internal_variable
-                us2 = 2200 - 46 * internal_variable
+                us = 800 + 87*internal_variable
+                us2 = 2200 - 87 * internal_variable
                 set_servo_pwm(servo_port, us2)
                 set_servo_pwm(13, us)
             elif servo_direction == 2:
