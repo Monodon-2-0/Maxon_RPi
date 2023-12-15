@@ -7,13 +7,11 @@ Created on Mon Dec 11 18:32:29 2023
 
 
 import time
+import threading
 
 from ctypes import *
 from pymavlink import mavutil
 
-
-
-i = 0
 
 # EPOS Command Library path
 path = '../../opt/EposCmdLib_6.8.1.0/lib/v7/libEposCmd.so.6.8.1.0'
@@ -98,6 +96,26 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_directio
         if true_position == target_position:
             break
 
+def motor_left():
+    move_motor(nodeID, servo_port_left)
+def motor_right():
+    move_motor(nodeID2, servo_port_right)
+
+def move_motor(node, servo_n):
+    move_to_position_speed(0, 300, node, 2, 2, servo_n)
+    time.sleep(1)
+    for s in range(2):
+        servo_direction = 1
+        move_to_position_speed(10000, 400, node, servo_direction, s, servo_n)
+
+        servo_direction = 0
+        move_to_position_speed(-10000, 400, node, servo_direction, s, servo_n)
+        # move to position 0 steps at 2000 rpm/s
+
+    move_to_position_speed(0, 200, node, 2, 2, servo_n)  # move to position 0 steps at 2000 rpm/s
+    # print('Motor position: %s' % (GetPositionIs(nodeID2)))
+    time.sleep(1)
+    move_to_position_speed(0, 300, node, 2, 2, servo_n)
 
 if __name__ == "__main__":
     # Initiating connection and setting motion profile
@@ -119,29 +137,12 @@ if __name__ == "__main__":
     epos.VCS_ClearFault(keyHandle, nodeID2, byref(pErrorCode))  # clear all faults
     epos.VCS_ActivateProfilePositionMode(keyHandle, nodeID2, byref(pErrorCode))  # activate profile position mode
     epos.VCS_SetEnableState(keyHandle, nodeID2, byref(pErrorCode))  # enable device
-
     print("Connection success with the EPOS")
-    move_to_position_speed(0, 300, nodeID, 2, 2, servo_port_left)
-    move_to_position_speed(0, 300, nodeID2, 2, 2,servo_port_right)
-    time.sleep(1)
+    x = threading.Thread(target=motor_left)
+    x.start()
+    y = threading.Thread(target=motor_right)
+    y.start()
 
-    for i in range(2):
-        servo_direction = 1
-
-        move_to_position_speed(10000, 400, nodeID, servo_direction, i, servo_port_left)
-        move_to_position_speed(10000, 400, nodeID2, servo_direction, i,servo_port_right)# move to position 20,000 steps at 5000 rpm/s
-        servo_direction = 0
-        move_to_position_speed(-10000, 400, nodeID, servo_direction, i, servo_port_left)
-        move_to_position_speed(-10000, 400, nodeID2, servo_direction, i,servo_port_right)
-        # move to position 0 steps at 2000 rpm/s
-
-    move_to_position_speed(0, 200, nodeID, 2, 2, servo_port_left)  # move to position 0 steps at 2000 rpm/s
-    move_to_position_speed(0, 200, nodeID2, 2, 2,servo_port_right)  # move to position 0 steps at 2000 rpm/s
-    # print('Motor position: %s' % (GetPositionIs(nodeID2)))
-    time.sleep(1)
-    move_to_position_speed(0, 300, nodeID, 2, 2, servo_port_left)
-    move_to_position_speed(0, 300, nodeID2, 2, 2,servo_port_right)
-    print("Process finished closing connections.....")
     epos.VCS_SetDisableState(keyHandle, nodeID, byref(pErrorCode))  # disable device
     epos.VCS_SetDisableState(keyHandle, nodeID2, byref(pErrorCode))  # disable device
     epos.VCS_CloseDevice(keyHandle, byref(pErrorCode))  # close device
