@@ -87,7 +87,8 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_port):
 
         true_position = get_position_is(node_n)
         us = int((true_position + 10000)/14.3) + 800
-        set_servo_pwm(servo_port, us)
+        us2 = 2200 - (us - 800)
+        set_servo_pwm(servo_port, us2)
         set_servo_pwm(13, us)
         print(f"microsegundos de pwm {us} y posicion del motor {get_position_is(node_n)}", )
         if true_position == target_position:
