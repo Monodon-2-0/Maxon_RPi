@@ -137,10 +137,10 @@ if __name__ == "__main__":
         move_to_position_speed(-10000, 400, 1, servo_direction, s, 8)
         # move to position 0 steps at 2000 rpm/s
 
-    move_to_position_speed(0, 200, node, 2, 2, servo_n)  # move to position 0 steps at 2000 rpm/s
+    move_to_position_speed(0, 200, 1, 2, 2, 8)  # move to position 0 steps at 2000 rpm/s
     # print('Motor position: %s' % (GetPositionIs(nodeID2)))
     time.sleep(1)
-    move_to_position_speed(0, 300, node, 2, 2, servo_n)
+    move_to_position_speed(0, 300, 1, 2, 2, 8)
     print("Connection success with the EPOS")
 
     # y = threading.Thread(target=motor_right)
