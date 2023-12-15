@@ -80,7 +80,7 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_directio
             epos.VCS_MoveToPosition(keyHandle, 2, -target_position, True, True,
                                     byref(pErrorCode))  # move to position
             internal_variable += 1
-            print(internal_variable)
+            
             if servo_direction == 1 and i == 0:
                 us = 1500
                 set_servo_pwm(servo_port, us)
@@ -99,6 +99,7 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_directio
                 us = 1500
                 set_servo_pwm(8, us)
                 set_servo_pwm(13, us)
+            print(f"microsegundos de pwm {us} y posicion del motor {get_position_is(node_n)}",)
 
         elif target_speed == 0:
             epos.VCS_HaltPositionMovement(keyHandle, node_n, byref(pErrorCode))  # halt motor
