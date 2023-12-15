@@ -67,7 +67,7 @@ def get_position_is(node_n):
     return pPositionIs.value
 
 # Move to position at speed
-def move_to_position_speed(target_position, target_speed, node_n, servo_direction, i, servo_port):
+def move_to_position_speed(target_position, target_speed, node_n, servo_port):
     internal_variable = 0
     print("Moving to the reference proposed....")
     while True:
@@ -81,30 +81,15 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_directio
                                     byref(pErrorCode))  # move to position
             internal_variable += 1
 
-            if servo_direction == 1 and i == 0:
-                us = 1500
-                set_servo_pwm(servo_port, us)
-                set_servo_pwm(13, us)
-            elif servo_direction == 1 and i == 1:
-                us = 2200 - 87*internal_variable
-                us2 = 800 + 87 * internal_variable
-                set_servo_pwm(servo_port, us2)
-                set_servo_pwm(13, us)
-            elif servo_direction == 0:
-                us = 800 + 87*internal_variable
-                us2 = 2200 - 87 * internal_variable
-                set_servo_pwm(servo_port, us2)
-                set_servo_pwm(13, us)
-            elif servo_direction == 2:
-                us = 1500
-                set_servo_pwm(8, us)
-                set_servo_pwm(13, us)
-            print(f"microsegundos de pwm {us} y posicion del motor {get_position_is(node_n)}",)
-
         elif target_speed == 0:
             epos.VCS_HaltPositionMovement(keyHandle, node_n, byref(pErrorCode))  # halt motor
             epos.VCS_HaltPositionMovement(keyHandle, 2, byref(pErrorCode))  # halt motor
+
         true_position = get_position_is(node_n)
+        us = true_position/14.3 + 800
+        set_servo_pwm(servo_port, us)
+        set_servo_pwm(13, us)
+        print(f"microsegundos de pwm {us} y posicion del motor {get_position_is(node_n)}", )
         if true_position == target_position:
             break
 
@@ -130,22 +115,19 @@ if __name__ == "__main__":
     epos.VCS_ActivateProfilePositionMode(keyHandle, nodeID2, byref(pErrorCode))  # activate profile position mode
     epos.VCS_SetEnableState(keyHandle, nodeID2, byref(pErrorCode))  # enable device
 
-    move_to_position_speed(0, 300, 1, 2, 2, 8)
+    move_to_position_speed(0, 300, 1, 8)
     time.sleep(1)
     for s in range(2):
-        servo_direction = 1
-        move_to_position_speed(10000, 400, 1, servo_direction, s, 8)
-
-        servo_direction = 0
-        move_to_position_speed(-10000, 400, 1, servo_direction, s, 8)
+        move_to_position_speed(10000, 400, 1, 8)
+        move_to_position_speed(-10000, 400, 1, 8)
         # move to position 0 steps at 2000 rpm/s
 
-    move_to_position_speed(0, 200, 1, 2, 2, 8)  # move to position 0 steps at 2000 rpm/s
+    move_to_position_speed(0, 200, 1, 8)  # move to position 0 steps at 2000 rpm/s
     # print('Motor position: %s' % (GetPositionIs(nodeID2)))
     set_servo_pwm(8, 800)
     set_servo_pwm(13, 800)
     time.sleep(1)
-    move_to_position_speed(0, 300, 1, 2, 2, 8)
+    move_to_position_speed(0, 300, 1, 8)
     print("Connection success with the EPOS")
 
     # y = threading.Thread(target=motor_right)

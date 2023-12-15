@@ -148,3 +148,5 @@ if __name__ == "__main__":
     epos.VCS_SetDisableState(keyHandle, nodeID2, byref(pErrorCode))  # disable device
     epos.VCS_CloseDevice(keyHandle, byref(pErrorCode))  # close device
 # board.close()
+
+
