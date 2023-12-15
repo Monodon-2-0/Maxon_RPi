@@ -77,7 +77,7 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_directio
             epos.VCS_MoveToPosition(keyHandle, node_n, target_position, True, True, byref(pErrorCode))  # move to position
             epos.VCS_SetPositionProfile(keyHandle, 2, target_speed, acceleration, deceleration,
                                         byref(pErrorCode))  # set profile parameters
-            epos.VCS_MoveToPosition(keyHandle, 2, target_position, True, True,
+            epos.VCS_MoveToPosition(keyHandle, 2, -target_position, True, True,
                                     byref(pErrorCode))  # move to position
             internal_variable += 1
             print(internal_variable)
