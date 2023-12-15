@@ -106,13 +106,21 @@ if __name__ == "__main__":
     master = mavutil.mavlink_connection('udpin:0.0.0.0:14770')
     master.wait_heartbeat()
     print('Connection success with navigator')
-
+    #Setup Motor Left
     keyHandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0',
                                     byref(pErrorCode))  # specify EPOS version and interface
     epos.VCS_SetProtocolStackSettings(keyHandle, baudrate, timeout, byref(pErrorCode))  # set baudrate
     epos.VCS_ClearFault(keyHandle, nodeID, byref(pErrorCode))  # clear all faults
     epos.VCS_ActivateProfilePositionMode(keyHandle, nodeID, byref(pErrorCode))  # activate profile position mode
     epos.VCS_SetEnableState(keyHandle, nodeID, byref(pErrorCode))  # enable device
+    # Setup Motor Right (Different Fins, just 2 Maxons rn)
+    keyHandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0',
+                                    byref(pErrorCode))  # specify EPOS version and interface
+    epos.VCS_SetProtocolStackSettings(keyHandle, baudrate, timeout, byref(pErrorCode))  # set baudrate
+    epos.VCS_ClearFault(keyHandle, nodeID2, byref(pErrorCode))  # clear all faults
+    epos.VCS_ActivateProfilePositionMode(keyHandle, nodeID2, byref(pErrorCode))  # activate profile position mode
+    epos.VCS_SetEnableState(keyHandle, nodeID2, byref(pErrorCode))  # enable device
+    
     print("Connection success with the EPOS")
     move_to_position_speed(0, 300, nodeID, 2, 2, servo_port_left)
     move_to_position_speed(0, 300, nodeID2, 2, 2,servo_port_right)
