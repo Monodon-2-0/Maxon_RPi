@@ -125,8 +125,8 @@ if __name__ == "__main__":
 
     move_to_position_speed(0, 200, 1, 8)  # move to position 0 steps at 2000 rpm/s
     # print('Motor position: %s' % (GetPositionIs(nodeID2)))
-    set_servo_pwm(8, 800)
-    set_servo_pwm(13, 800)
+    set_servo_pwm(8, 1500)
+    set_servo_pwm(13, 1500)
     time.sleep(1)
     move_to_position_speed(0, 300, 1, 8)
     print("Connection success with the EPOS")
