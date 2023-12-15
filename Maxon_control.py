@@ -97,10 +97,11 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_directio
             break
 
 def motor_left():
+    print("moving left motor")
     move_motor(nodeID, servo_port_left)
 def motor_right():
     move_motor(nodeID2, servo_port_right)
-
+    print("moving right motor")
 def move_motor(node, servo_n):
     move_to_position_speed(0, 300, node, 2, 2, servo_n)
     time.sleep(1)
@@ -140,8 +141,8 @@ if __name__ == "__main__":
     print("Connection success with the EPOS")
     x = threading.Thread(target=motor_left)
     x.start()
-    y = threading.Thread(target=motor_right)
-    y.start()
+    # y = threading.Thread(target=motor_right)
+    # y.start()
 
     epos.VCS_SetDisableState(keyHandle, nodeID, byref(pErrorCode))  # disable device
     epos.VCS_SetDisableState(keyHandle, nodeID2, byref(pErrorCode))  # disable device
