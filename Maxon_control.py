@@ -74,26 +74,26 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_directio
     print("Moving to the reference proposed....")
     while True:
         if target_speed != 0:
-            epos.VCS_SetPositionProfile(keyHandle, 1, target_speed, acceleration, deceleration,
+            epos.VCS_SetPositionProfile(keyHandle, node_n, target_speed, acceleration, deceleration,
                                         byref(pErrorCode))  # set profile parameters
-            epos.VCS_MoveToPosition(keyHandle, 1, target_position, True, True, byref(pErrorCode))  # move to position
+            epos.VCS_MoveToPosition(keyHandle, node_n, target_position, True, True, byref(pErrorCode))  # move to position
             internal_variable += 1
             print(internal_variable)
             if servo_direction == 1 and i == 0:
                 us = 1500
-                set_servo_pwm(8, us)
+                set_servo_pwm(servo_port, us)
             elif servo_direction == 1 and i == 1:
                 us = 2200 - 46*internal_variable
-                set_servo_pwm(8, us)
+                set_servo_pwm(servo_port, us)
             elif servo_direction == 0:
                 us = 800 + 46*internal_variable
-                set_servo_pwm(8, us)
+                set_servo_pwm(servo_port, us)
             elif servo_direction == 2:
                 us = 1500
                 set_servo_pwm(8, us)
 
         elif target_speed == 0:
-            epos.VCS_HaltPositionMovement(keyHandle, 1, byref(pErrorCode))  # halt motor
+            epos.VCS_HaltPositionMovement(keyHandle, node_n, byref(pErrorCode))  # halt motor
         true_position = get_position_is(node_n)
         if true_position == target_position:
             break
