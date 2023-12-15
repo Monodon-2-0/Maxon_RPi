@@ -81,21 +81,22 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_directio
                                     byref(pErrorCode))  # move to position
             internal_variable += 1
             print(internal_variable)
-            us = 3500
             if servo_direction == 1 and i == 0:
-                # us = 1500
+                us = 1500
                 set_servo_pwm(servo_port, us)
                 set_servo_pwm(13, us)
             elif servo_direction == 1 and i == 1:
-                # us = 2200 - 46*internal_variable
-                set_servo_pwm(servo_port, us)
+                us = 2200 - 46*internal_variable
+                us2 = 800 + 46 * internal_variable
+                set_servo_pwm(servo_port, us2)
                 set_servo_pwm(13, us)
             elif servo_direction == 0:
-                # us = 800 + 46*internal_variable
-                set_servo_pwm(servo_port, us)
+                us = 800 + 46*internal_variable
+                us2 = 2200 - 46 * internal_variable
+                set_servo_pwm(servo_port, us2)
                 set_servo_pwm(13, us)
             elif servo_direction == 2:
-                # us = 1500
+                us = 1500
                 set_servo_pwm(8, us)
                 set_servo_pwm(13, us)
 
@@ -140,6 +141,8 @@ if __name__ == "__main__":
 
     move_to_position_speed(0, 200, 1, 2, 2, 8)  # move to position 0 steps at 2000 rpm/s
     # print('Motor position: %s' % (GetPositionIs(nodeID2)))
+    set_servo_pwm(8, 800)
+    set_servo_pwm(13, 800)
     time.sleep(1)
     move_to_position_speed(0, 300, 1, 2, 2, 8)
     print("Connection success with the EPOS")
