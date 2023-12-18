@@ -101,9 +101,9 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_port):
         elif us_tail == 1200:
             back = 0
         if back == 1:
-            us_tail = us_tail - 20
+            us_tail = us_tail - 5
         else:
-            us_tail = us_tail + 20
+            us_tail = us_tail + 5
         if us_camera == 1900:
             back_c = 1
         elif us_camera == 1100:
