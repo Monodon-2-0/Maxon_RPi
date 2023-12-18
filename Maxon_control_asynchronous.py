@@ -96,14 +96,14 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_port):
         set_servo_pwm(13, us)
 
         # Implementar que gire la camara y el servo de atras
-        if us_tail == 1300:
+        if us_tail == 1400:
             back = 1
         elif us_tail == 1200:
             back = 0
         if back == 1:
-            us_tail = us_tail - 5
+            us_tail = us_tail - 20
         else:
-            us_tail = us_tail + 5
+            us_tail = us_tail + 20
         if us_camera == 1900:
             back_c = 1
         elif us_camera == 1100:
@@ -115,7 +115,6 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_port):
         print(f"US_CAMERA  {us_camera} y US_TAIL {us_tail}" )
         set_servo_pwm(15, us_camera)
         set_servo_pwm(10, us_tail)
-        set_servo_pwm(10, us)
         print(f"microsegundos de pwm {us} y posicion del motor {get_position_is(node_n)}", )
         if true_position == target_position:
             break
