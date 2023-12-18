@@ -33,6 +33,7 @@ if __name__ == "__main__":
     master = mavutil.mavlink_connection('udpin:0.0.0.0:14770')
     master.wait_heartbeat()
     print('Connection success with navigator')
+
     for us in range(1100, 1500, 50):
-        set_servo_pwm(3, us)
+        set_servo_pwm(15, us)
         time.sleep(0.125)
