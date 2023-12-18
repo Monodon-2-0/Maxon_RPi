@@ -35,6 +35,6 @@ if __name__ == "__main__":
     print('Connection success with navigator')
     while True:
         print("Iterating")
-        for us in range(1100, 1500, 50):
+        for us in range(1100, 1900, 50):
             set_servo_pwm(15, us)
             time.sleep(0.125)
