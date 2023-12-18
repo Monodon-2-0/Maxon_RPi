@@ -36,5 +36,5 @@ if __name__ == "__main__":
     while True:
         print("Iterating")
         for us in range(1100, 1900, 50):
-            set_servo_pwm(13, 800)
+            set_servo_pwm(10, 800)
             time.sleep(0.125)
