@@ -112,7 +112,7 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_port):
             us_camera = us_camera - 20
         else:
             us_camera = us_camera + 20
-        print(f"US_CAMERA  {us_camera} y US_TAIL {us_tail)}" )
+        print(f"US_CAMERA  {us_camera} y US_TAIL {us_tail}" )
         set_servo_pwm(15, us_camera)
         set_servo_pwm(10, us_tail)
         set_servo_pwm(10, us)
