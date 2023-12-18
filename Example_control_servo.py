@@ -37,5 +37,5 @@ if __name__ == "__main__":
         print("Iterating")
         set_servo_pwm(10, 1200)
         time.sleep(0.125)
-        set_servo_pwm(10, 1200)
+        set_servo_pwm(10, 1400)
         time.sleep(0.125)
