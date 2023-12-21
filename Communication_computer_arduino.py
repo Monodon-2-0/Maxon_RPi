@@ -13,10 +13,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print(f"Connected by {addr}")
         while True:
             data = conn.recv(1024)
+            print(f"Data received {data}")
             if not data:
                 break
             conn.sendall(data)
-    for i in range(0, 30):
-        print("sending data")
-        conn.sendall(b"Iteration")
-        time.sleep(0.2)
