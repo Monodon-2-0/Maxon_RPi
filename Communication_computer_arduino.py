@@ -3,8 +3,8 @@
 import socket
 
 class Client:
-    HOST = "192.168.200.112" 
-    PORT = 12345
+    HOST = "192.168.200.112"
+    PORT = 65432  
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((self.HOST, self.PORT))
