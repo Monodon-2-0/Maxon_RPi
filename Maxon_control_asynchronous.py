@@ -5,13 +5,11 @@ Created on Mon Dec 11 18:32:29 2023
 @author: Innovacion
 """
 
-
 import time
 import threading
 
 from ctypes import *
 from pymavlink import mavutil
-
 
 # EPOS Command Library path
 path = '../../opt/EposCmdLib_6.8.1.0/lib/v7/libEposCmd.so.6.8.1.0'
@@ -33,9 +31,10 @@ timeout = 500
 # Configure desired motion profile
 acceleration = 30000  # rpm/s, up to 1e7 would be possible
 deceleration = 30000  # rpm/s
-#Servo Ports
+# Servo Ports
 servo_port_left = 8
 servo_port_right = 13
+
 
 def set_servo_pwm(servo_n, microseconds):
     """ Sets AUX 'servo_n' output PWM pulse-width.
@@ -59,12 +58,16 @@ def set_servo_pwm(servo_n, microseconds):
         0, 0, 0, 0, 0  # unused parameters
     )
 
+
 # Query motor position
+
+
 def get_position_is(node_n):
     pPositionIs = c_long()
     pErrorCode = c_uint()
     epos.VCS_GetPositionIs(keyHandle, node_n, byref(pPositionIs), byref(pErrorCode))
     return pPositionIs.value
+
 
 # Move to position at speed
 def move_to_position_speed(target_position, target_speed, node_n, servo_port):
@@ -78,7 +81,8 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_port):
         if target_speed != 0:
             epos.VCS_SetPositionProfile(keyHandle, node_n, target_speed, acceleration, deceleration,
                                         byref(pErrorCode))  # set profile parameters
-            epos.VCS_MoveToPosition(keyHandle, node_n, target_position, True, True, byref(pErrorCode))  # move to position
+            epos.VCS_MoveToPosition(keyHandle, node_n, target_position, True, True,
+                                    byref(pErrorCode))  # move to position
             epos.VCS_SetPositionProfile(keyHandle, 2, target_speed, acceleration, deceleration,
                                         byref(pErrorCode))  # set profile parameters
             epos.VCS_MoveToPosition(keyHandle, 2, -target_position, True, True,
@@ -90,7 +94,7 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_port):
             epos.VCS_HaltPositionMovement(keyHandle, 2, byref(pErrorCode))  # halt motor
 
         true_position = get_position_is(node_n)
-        us = int((true_position + 10000)/14.3) + 800
+        us = int((true_position + 10000) / 14.3) + 800
         us2 = 2200 - (us - 800)
         set_servo_pwm(servo_port, us2)
         set_servo_pwm(13, us)
@@ -112,7 +116,7 @@ def move_to_position_speed(target_position, target_speed, node_n, servo_port):
             us_camera = us_camera - 50
         else:
             us_camera = us_camera + 50
-        print(f"US_CAMERA  {us_camera} y US_TAIL {us_tail}" )
+        print(f"US_CAMERA  {us_camera} y US_TAIL {us_tail}")
         set_servo_pwm(15, us_camera)
         set_servo_pwm(10, us_tail)
         print(f"microsegundos de pwm {us} y posicion del motor {get_position_is(node_n)}", )
@@ -128,7 +132,9 @@ if __name__ == "__main__":
     master.wait_heartbeat()
     print('Connection success with navigator')
 
-    #Setup Motor Left
+
+
+    # Setup Motor Left
     keyHandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0',
                                     byref(pErrorCode))  # specify EPOS version and interface
     epos.VCS_SetProtocolStackSettings(keyHandle, baudrate, timeout, byref(pErrorCode))  # set baudrate
