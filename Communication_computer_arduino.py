@@ -3,7 +3,7 @@
 import socket
 
 class Client:
-    HOST = "192.168.200.105" # Your IP of course
+    HOST = "192.168.200.112" 
     PORT = 12345
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -14,6 +14,5 @@ class Client:
         while True:
             data = self.sock.recv(1024).decode()
             print(data)
-    
 
 c = Client()
