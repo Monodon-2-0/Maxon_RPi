@@ -1,18 +1,22 @@
-#!/usr/bin/env python3
-# Client #
+# echo-server.py
+import time
 import socket
 
-class Client:
-    HOST = "192.168.200.112"
-    PORT = 65432  
-    def __init__(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((self.HOST, self.PORT))
-        self.recv()
+HOST = "0.0.0.0"  # Standard loopback interface address (localhost)
+PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
-    def recv(self):
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((HOST, PORT))
+    s.listen()
+    conn, addr = s.accept()
+    with conn:
+        print(f"Connected by {addr}")
         while True:
-            data = self.sock.recv(1024).decode()
-            print(data)
-
-c = Client()
+            data = conn.recv(1024)
+            if not data:
+                break
+            conn.sendall(data)
+    for i in range(0, 30):
+        print("sending data")
+        conn.sendall(b"Iteration")
+        time.sleep(0.2)
