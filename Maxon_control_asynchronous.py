@@ -132,8 +132,6 @@ if __name__ == "__main__":
     master.wait_heartbeat()
     print('Connection success with navigator')
 
-
-
     # Setup Motor Left
     keyHandle = epos.VCS_OpenDevice(b'EPOS4', b'MAXON SERIAL V2', b'USB', b'USB0',
                                     byref(pErrorCode))  # specify EPOS version and interface
