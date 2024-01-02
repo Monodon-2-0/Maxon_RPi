@@ -16,4 +16,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             print(f"Data received {data}")
             if not data:
                 break
+            if data == "Hello world":
+                print("hecho")
             conn.sendall(data)
